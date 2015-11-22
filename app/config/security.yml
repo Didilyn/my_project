@@ -1,0 +1,61 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/book/security.html
+security:
+    role_hierarchy:
+            ROLE_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    # ...
+
+    providers:
+        our_db_provider:
+            entity:
+                class: AppBundle:User
+                property: username
+                # if you're using multiple entity managers
+                # manager_name: customer
+
+    firewalls:
+        default:
+            pattern : ^/
+            anonymous: ~
+            http_basic: ~
+            form_login:
+              login_path: /login
+              check_path: /login_check
+    # ...
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+    access_control:
+            # require ROLE_ADMIN for /admin*
+            - { path: ^/admin, roles: ROLE_ADMIN }
+            # activate different ways to authenticate
+
+            # http_basic: ~
+            # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: ~
+            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+security:
+
+    firewalls:
+        secured_area:
+            pattern: ^/admin
+            stateless: true
+            simple_preauth:
+                authenticator: apikey_authenticator
+            provider: api_key_user_provider
+
+    providers:
+        api_key_user_provider:
+            id: api_key_user_provider
+            webservice:
+                id: webservice_user_provider
+                in_memory:
+                            memory:
+                                users:
+                                    admin:
+                                        password: $2y$13$Ezrn8Tc31nc9Ci9PVJsZEOhmGJar/Cd0oZMrwWWEUYZ0gGWaNm7Ai

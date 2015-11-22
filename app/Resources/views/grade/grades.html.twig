@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <section>
+        {% for grade in grades %}
+            <article>
+                <h1><a href="./grade/{{ grade.id }}/edit">{{ grade.comment }}</a></h1>
+                <p>{{ grade.lesson.title }}</p>
+                <p>{{ grade.user.username }} got {{ grade.grade }}</p>
+            </article>
+            <hr>
+        {% endfor %}
+    </section>
+
+{% endblock %}
